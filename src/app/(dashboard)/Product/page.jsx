@@ -1,12 +1,15 @@
 "use client"
 import React from 'react'
 import { motion } from 'framer-motion'
-import Statecard from '../components/Statecard'
+import Statecard from '../../components/Statecard'
 import { ChartBarStacked, DollarSign, ShoppingBag, SquareActivity } from 'lucide-react'
-import ProductTable from '../components/ProductTable'
+import ProductTable from '../../components/ProductTable'
+import ProtectedRoutes from '@/app/ProtectedRoutes/ProtectedRoutes'
+
 
 function ProductsPage() {
   return (
+    <ProtectedRoutes>
     <div className='flex-1 overflow-auto relative z-10'>
     <main className='max-w-7xl mx-auto py-4 lg:px-8'>
         <motion.div 
@@ -26,6 +29,7 @@ function ProductsPage() {
     </main>
 
 </div>
+    </ProtectedRoutes>
   )
 }
 

@@ -3,22 +3,61 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { Edit, Search, Trash } from 'lucide-react'
 import Image from 'next/image'
-
+import axios from 'axios'
+import { toast } from 'react-toastify'
+import { useRouter } from 'next/navigation'
 function UserTable() {
+    const router = useRouter()
     const[clients, setClients] = useState([])
     const[seacrhTerm, setSearchTerm] = useState("")
    
 
     
     useEffect(() => {
-        fetch("/data/data.json")
-        .then(res => res.json())
-        .then(data => setClients(data.clients))
+        axios.get("http://127.0.0.1:8000/view_users/")
+        .then(response => {
+            console.log('API Response:', response.data);
+            if (response.data && Array.isArray(response.data.data)) {
+                setClients(response.data.data);
+            } else {
+                console.error('Unexpected response format:', response.data);
+                setClients([]);
+            }
+        })
+        .catch(err => {
+            console.error('Error fetching users:', err);
+            toast.error('Failed to load users');
+            setClients([]);
+        });
     }, [])
 
-    const filterClients = clients.filter((client)=>{
-        return client.name.toLowerCase().includes(seacrhTerm.toLowerCase()) || client.email.toLowerCase().includes(seacrhTerm.toLowerCase())
-    })
+    const filterClients = useMemo(() => clients.filter(
+      (client)=>{
+        return client.name.toLowerCase().includes(seacrhTerm.toLowerCase()) || 
+        client.email.toLowerCase().includes(seacrhTerm.toLowerCase())
+    }), [clients, seacrhTerm])
+
+    const handleDelete = async(e)=>{
+        e.preventDefault()
+        const id = e.target.getAttribute("data-id")
+        const data =new FormData()
+        data.set("id",id)
+        try {
+            const response = await axios.post(`http://127.0.0.1:8000/delete_user/`,data)
+            if(response.status === 200){
+                toast.success("User deleted successfully")
+                setClients(clients.filter((client)=>client.id !== id))
+            }
+        } catch (error) {
+            toast.error("User not deleted")
+            console.log(error)
+        }
+    }
+    const handleUpdate = async(e)=>{
+        e.preventDefault()
+        const id = e.target.getAttribute("data-id")
+        router.push(`/updateuser/${id}`)
+    }
   return (
     <motion.div 
     initial={{ opacity: 0,y:20 }}
@@ -46,6 +85,7 @@ function UserTable() {
                 <tr>
                     {[
                         "Name",
+                        "Product ID",
                         "Email",
                         "Phone",
                         "Country",
@@ -69,7 +109,7 @@ function UserTable() {
                                 {/* mobile view */}
                                 <td className='sm:hidden px-3 py-2'>
                                     <div className='flex items-center'>
-                                        <Image src={client.image} alt={client.name} width={50} height={50} className='h-9 w-9 rounded-full'/>
+                                        <Image src={client.image ? client.image : "/Images/user1.jpg"} alt={client.name} width={50} height={50} className='h-9 w-9 rounded-full'/>
                                         <div className='ml-3'>
                                             <p className='font-medium text-gray-100'>{client.name}</p>
                                             <p className='text-sm text-gray-400'>{client.email}</p>
@@ -79,7 +119,7 @@ function UserTable() {
                                 {/* desktop view */}
                                 <td className='hidden md:table-cell px-3 py-4'>
                                     <div className='flex items-center'>
-                                        <Image src={client.image} alt={client.name} width={50} height={50} className='h-9 w-9 rounded-full'/>
+                                        <Image src={client.image ? client.image : "/Images/user1.jpg"} alt={client.name} width={50} height={50} className='h-9 w-9 rounded-full'/>
                                         <div className='ml-3'>
                                             <p className='font-medium text-gray-100'>{client.name}</p>
                                             
@@ -87,18 +127,21 @@ function UserTable() {
                                     </div>
                                 </td>
                                 <td className='hidden md:table-cell px-3 py-4'>
+                                    <p className='text-sm text-gray-400'>{client.id}</p>
+                                </td>
+                                <td className='hidden md:table-cell px-3 py-4'>
                                     <p className='text-sm text-gray-400'>{client.email}</p>
                                 </td>
                                 <td className='hidden md:table-cell px-3 py-4'>
-                                    <p className='text-sm text-gray-400'>{client.phoneNumber}</p>
+                                    <p className='text-sm text-gray-400'>{client.mobile}</p>
                                 </td>
                                 <td className='hidden md:table-cell px-3 py-4'>
                                     <p className='text-sm text-gray-400'>{client.country}</p>
                                 </td>
                                 <td className='sm:text-center md:text-left md:table-cell px-6 py-4 whitespace-nowrap text-right text-sm font-medium'>
                                     <div className='flex items-center justify-start align-center'>
-                                        <Edit className=' text-blue-400 hover:text-blue-300 mr-2' size={16}/>
-                                        <Trash className=' text-red-400 hover:text-red-300' size={16}/>
+                                        <Edit className=' text-blue-400 hover:text-blue-300 mr-2' size={16} onClick={handleUpdate} data-id={client.id}/>
+                                        <Trash className=' text-red-400 hover:text-red-300' size={16} onClick={handleDelete} data-id={client.id}/>
                                     </div>
                                 </td>
                             </motion.tr>

@@ -1,14 +1,16 @@
 "use client"
 import React from 'react'
-import Statecard from '../components/Statecard'
+import Statecard from '../../components/Statecard'
 import { DollarSign, ShoppingCart, Users } from 'lucide-react'
 import { motion } from 'framer-motion'
-import SalesOverview from '../components/SalesOverview'
-import CatagoryDistributionChart from '../components/CatagoryDistributionChart'
-import OrderDistributionChart from '../components/OrderDistributionChart'
-import ProductPerformanceChart from '../components/ProductPerformanceChart'
-function Overview() {
+import SalesOverview from '../../components/SalesOverview'
+import CatagoryDistributionChart from '../../components/CatagoryDistributionChart'
+import OrderDistributionChart from '../../components/OrderDistributionChart'
+import ProductPerformanceChart from '../../components/ProductPerformanceChart'
+import ProtectedRoutes from '@/app/ProtectedRoutes/ProtectedRoutes'
+function Dashboard() {
   return (
+    <ProtectedRoutes> 
     <div className='flex-1 overflow-auto relative z-10'>
         <main className='max-w-7xl mx-auto py-4 lg:px-8'>
             <motion.div 
@@ -30,7 +32,8 @@ function Overview() {
         </main>
 
     </div>
+    </ProtectedRoutes>
   )
-}
+} 
 
-export default Overview
+export default Dashboard

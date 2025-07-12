@@ -4,7 +4,7 @@ export const sideBarData =[
     {
         name: "DashBoard",
         icons: icons.House,
-        path: "/"
+        path: "/Overview"
     },
     {
         name: "Products",
@@ -45,5 +45,6 @@ export const sideBarData =[
         name: "Help",
         icons: icons.Info,
         path: "/help"
-    }
+    },
+   
 ]

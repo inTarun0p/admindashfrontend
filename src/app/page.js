@@ -1,10 +1,11 @@
 import Image from "next/image";
-import Overview from "./Overview/page";
+import LoginPage from "./login/page";
+
 
 export default function Home() {
   return (
     <>
-    <Overview />
+    <LoginPage />
     </>
   );
 } 
