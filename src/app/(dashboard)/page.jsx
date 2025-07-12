@@ -1,19 +1,9 @@
-"use client"
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { redirect } from 'next/navigation';
 
 export default function DashboardPage() {
-  const router = useRouter();
-
   // Redirect to /Overview by default
-  useEffect(() => {
-    router.push('/Overview');
-  }, [router]);
+  redirect('/Overview');
 
-  // Optional: Show a loading state while redirecting
-  return (
-    <div className="flex items-center justify-center min-h-screen">
-      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-    </div>
-  );
+  // This won't be rendered since we're redirecting
+  return null;
 }
