@@ -9,7 +9,7 @@ export async function generateStaticParams() {
 function UpdateProductsPage() {
   return (
     <ProtectedRoutes>
-<UpdateProducts/>
+      <UpdateProducts/>
     </ProtectedRoutes>
   )
 }

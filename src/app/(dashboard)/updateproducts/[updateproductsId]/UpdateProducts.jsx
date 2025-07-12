@@ -6,9 +6,6 @@ import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
 import { useParams } from 'next/navigation'
 
-export async function generateStaticParams() {
-    return [];
-}
 function UpdateProduct() {
     const router = useRouter()
     const name = useRef()

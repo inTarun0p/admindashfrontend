@@ -8,9 +8,9 @@ export async function generateStaticParams() {
 
 function UpdateUser() {
   return (
-<ProtectedRoutes>
-<UpdateForm/>
-</ProtectedRoutes>
+    <ProtectedRoutes>
+      <UpdateForm/>
+    </ProtectedRoutes>
   )
 }
 
