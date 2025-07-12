@@ -5,6 +5,10 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 import { useRouter } from 'next/navigation'
 import { useParams } from 'next/navigation'
+
+export async function generateStaticParams() {
+    return [];
+}
 function UpdateProduct() {
     const router = useRouter()
     const name = useRef()
@@ -20,7 +24,7 @@ function UpdateProduct() {
         const productId = updateproductsId;
         console.log("Fetching product with ID:", productId);
       
-        axios.get('http://127.0.0.1:8000/view_products/')
+        axios.get('https://adminbackend-czlc.onrender.com/view_products/')
             .then((response) => {
                 console.log('API Response:', response.data);
                 
