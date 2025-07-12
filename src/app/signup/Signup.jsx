@@ -27,7 +27,7 @@ function Signup() {
 
         try {
             console.log('Sending data:', data);
-            const response = await axios.post('http://localhost:8000/signup/', data, {
+            const response = await axios.post('https://adminbackend-czlc.onrender.com/signup/', data, {
                 headers: {
                     'Content-Type': 'application/json',
                 }

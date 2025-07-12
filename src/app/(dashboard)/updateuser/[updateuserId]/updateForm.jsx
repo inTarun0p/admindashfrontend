@@ -70,7 +70,7 @@ function UpdateUser() {
         
            console.log(data)
       
-            const response = await axios.post('http://127.0.0.1:8000/update_user/', data,{
+            const response = await axios.post('https://adminbackend-czlc.onrender.com/update_user/', data,{
                 headers:{
                     "Content-Type":"application/json"
                 }

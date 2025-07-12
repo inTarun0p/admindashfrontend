@@ -20,7 +20,7 @@ function UsersPage() {
     // Fetch users data
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:8000/view_users/")
+        const response = await axios.get("https://adminbackend-czlc.onrender.com/view_users/")
         console.log('Users data:', response.data)
         setCount(Array.isArray(response.data.data) ? response.data.data : [])
       } catch (error) {

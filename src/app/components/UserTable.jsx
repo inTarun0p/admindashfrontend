@@ -14,7 +14,7 @@ function UserTable() {
 
     
     useEffect(() => {
-        axios.get("http://127.0.0.1:8000/view_users/")
+        axios.get("https://adminbackend-czlc.onrender.com/view_users/")
         .then(response => {
             console.log('API Response:', response.data);
             if (response.data && Array.isArray(response.data.data)) {
@@ -43,7 +43,7 @@ function UserTable() {
         const data =new FormData()
         data.set("id",id)
         try {
-            const response = await axios.post(`http://127.0.0.1:8000/delete_user/`,data)
+            const response = await axios.post(`https://adminbackend-czlc.onrender.com/delete_user/`,data)
             if(response.status === 200){
                 toast.success("User deleted successfully")
                 setClients(clients.filter((client)=>client.id !== id))

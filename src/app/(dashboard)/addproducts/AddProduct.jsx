@@ -30,7 +30,7 @@ function AddProduct() {
             formData.append('image', image.current.files[0]);
         }
         
-        axios.post("http://127.0.0.1:8000/add_product/", formData, {
+        axios.post("https://adminbackend-czlc.onrender.com/add_product/", formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },

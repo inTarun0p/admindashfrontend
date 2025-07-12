@@ -16,7 +16,7 @@ function Login() {
             password: passwordRef.current.value
         }
         try {
-            const response = await axios.post('http://127.0.0.1:8000/login/', data, {
+            const response = await axios.post('https://adminbackend-czlc.onrender.com/login/', data, {
                 headers: {
                     'Content-Type': 'application/json',
                 }
