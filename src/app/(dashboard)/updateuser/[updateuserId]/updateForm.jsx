@@ -15,7 +15,7 @@ function UpdateUser() {
         // Convert updateuserId to a number since IDs are typically numbers
         const userId = parseInt(updateuserId, 10);
         
-        axios.get('http://127.0.0.1:8000/view_users/')
+        axios.get('https://adminbackend-czlc.onrender.com/view_users/')
             .then((response) => {
                 console.log('API Response:', response.data);
                 

@@ -23,13 +23,13 @@ function Header() {
             <div className='max-w-7xl mx-auto py-4 px-4 sm:px-6 flex items-center justify-between'>
                 <h1 className='text-xl sm:text-lg lg:text-2xl font-semibold text-gray-100'>Dashboard</h1>
                 <div className='flex items-center space-x-3 sm:space-x-4'>
-                    <Image src="/images/india.png" alt="india" width={20} height={20} className='rounded-full shadow-md cursor-pointer' />
+                    <Image src="/Images/circle.png" alt="india" width={20} height={20} className='rounded-full shadow-md cursor-pointer' />
 
                     <div className='relative cursor-pointer'>
                         <Bell className='w-5 h-5 text-gray-300' />
                     </div>
                     <div className='flex items-center space-x-2 sm:space-x-3'>
-                        <Image src="/images/avatar.png" alt="avatar" width={40} height={40} className='rounded-full shadow-md cursor-pointer' />
+                        <Image src="/Images/avatar.png" alt="avatar" width={40} height={40} className='rounded-full shadow-md cursor-pointer' />
                     </div>
                     <span className='hidden sm:block text-gray-100 font-medium'>{name}</span>
                     <div className='flex items-center space-x-2 sm:space-x-3'>
