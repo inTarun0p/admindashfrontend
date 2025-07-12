@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  reactStrictMode: true,
   images: {
     unoptimized: true,
     remotePatterns: [
@@ -16,6 +17,10 @@ const nextConfig = {
         pathname: '/media/**',
       },
     ],
+  },
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false, path: false };
+    return config;
   },
   // Add this to handle client-side routing in production
   trailingSlash: true,
