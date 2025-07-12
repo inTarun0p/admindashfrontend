@@ -14,30 +14,38 @@ function AddProduct() {
     const sales = useRef()
     const image = useRef()
     const productid = useRef()
-    const handleSubmit = (e) => {
+    const handleSubmit = async(e) => {
         e.preventDefault();
         
         const formData = new FormData();
         formData.append('name', name.current.value);
-        formData.append('productid',productid.current.value)
+        formData.append('productid', productid.current.value);
         formData.append('category', category.current.value);
         formData.append('price', price.current.value);
         formData.append('stock', stock.current.value);
         formData.append('sales', sales.current.value);
-        
-        // Check if a file is selected
-        if (image.current.files[0]) {
-            formData.append('image', image.current.files[0]);
+
+        // Append image only if file is selected
+        if (image.current.files.length > 0) {
+            const file = image.current.files[0];
+            console.log('Selected image:', {
+                name: file.name,
+                type: file.type,
+                size: file.size
+            });
+            
+            // Add image with additional metadata
+            formData.append('image', file, file.name);
+            formData.append('image_name', file.name);
+            formData.append('image_type', file.type);
+            formData.append('image_size', file.size);
+        } else {
+            console.log('No image selected');
         }
         
-        axios.post("https://adminbackend-czlc.onrender.com/add_product/", formData, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            },
-        })
-        .then((response)=>{
-            console.log(response.data)
-            toast.success("Product added successfully",{
+        // Add validation before sending request
+        if (!name.current.value || !category.current.value || !price.current.value || !stock.current.value) {
+            toast.error("Please fill all required fields", {
                 position: "top-center",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -46,12 +54,77 @@ function AddProduct() {
                 draggable: true,
                 progress: undefined,
                 theme: "dark",
-            })
-            router.push('/Product')
-        })
-        .catch((error)=>{
-            console.log(error)
-            toast.error("Something went wrong",{
+            });
+            return;
+        }
+
+        // Validate and log form data before sending
+        const formDataObject = {
+            name: name.current.value.trim(),
+            productid: productid.current.value.trim(),
+            category: category.current.value.trim(),
+            price: parseFloat(price.current.value.trim()),
+            stock: parseInt(stock.current.value.trim()),
+            sales: parseInt(sales.current.value.trim()),
+            image: image.current.files[0]
+        };
+
+        // Validate image if selected
+        if (formDataObject.image) {
+            const maxSize = 5 * 1024 * 1024; // 5MB
+            const allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+
+            if (!allowedTypes.includes(formDataObject.image.type)) {
+                toast.error("Please upload a valid image file (JPEG, PNG, or GIF)", {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                return;
+            }
+
+            if (formDataObject.image.size > maxSize) {
+                toast.error("Image file is too large. Maximum size is 5MB", {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+                return;
+            }
+        }
+
+        // Log all form data values
+        console.log('Form data values:', {
+            name: formDataObject.name,
+            productid: formDataObject.productid,
+            category: formDataObject.category,
+            price: formDataObject.price,
+            stock: formDataObject.stock,
+            sales: formDataObject.sales,
+            image: formDataObject.image ? {
+                name: formDataObject.image.name,
+                type: formDataObject.image.type,
+                size: formDataObject.image.size
+            } : 'No file selected'
+        });
+
+        // Log the actual FormData object
+        const formDataEntries = Array.from(formData.entries());
+        console.log('FormData entries:', formDataEntries);
+
+        // Validate data types
+        if (isNaN(formDataObject.price) || isNaN(formDataObject.stock)) {
+            toast.error("Price and stock must be valid numbers", {
                 position: "top-center",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -60,8 +133,152 @@ function AddProduct() {
                 draggable: true,
                 progress: undefined,
                 theme: "dark",
-            })
-        })
+            });
+            return;
+        }
+
+        // Add error handling for network issues
+        try {
+            const response = await axios.post("https://adminbackend-czlc.onrender.com/add_product/", formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                    'Accept': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
+                timeout: 10000,
+                validateStatus: function (status) {
+                    // Consider any status between 200-599 as successful
+                    return status >= 200 && status < 600;
+                }
+            });
+            
+            console.log('Success response:', response.data);
+            toast.success("Product added successfully", {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+            });
+            
+            // Refresh the products list
+            router.refresh();
+            router.push('/Product');
+        } catch (error) {
+            console.error('Request failed:', {
+                status: error.response?.status,
+                statusText: error.response?.statusText,
+                data: error.response?.data,
+                request: {
+                    method: error.config?.method,
+                    url: error.config?.url,
+                    headers: error.config?.headers,
+                    data: Array.from(formData.entries())
+                }
+            });
+
+            // Try to get more detailed error information
+            if (error.response?.data) {
+                try {
+                    const errorData = JSON.parse(error.response.data);
+                    console.error('Parsed error response:', errorData);
+                } catch (parseError) {
+                    console.error('Could not parse error response:', error.response.data);
+                }
+            }
+
+            // Show detailed error message to user
+            // Log the full request configuration
+            console.error('Request configuration:', {
+                url: error.config?.url,
+                method: error.config?.method,
+                headers: {
+                    ...error.config?.headers,
+                    'Content-Type': error.config?.headers?.['Content-Type']
+                },
+                timeout: error.config?.timeout
+            });
+
+            // Log the server response
+            console.error('Server response:', {
+                status: error.response?.status,
+                statusText: error.response?.statusText,
+                data: error.response?.data,
+                headers: error.response?.headers
+            });
+
+            // Show detailed error message to user
+            let errorMessage = "Failed to add product. Please check:";
+            if (error.response?.data) {
+                try {
+                    const errorData = JSON.parse(error.response.data);
+                    if (errorData.error?.includes('InvalidStorageError')) {
+                        errorMessage += `\n- Storage configuration error: ${errorData.error}`;
+                        errorMessage += '\n- Please contact the administrator to check the storage settings';
+                    } else {
+                        errorMessage += `\n- Server error: ${errorData.error || errorData.message || 'Unknown error'}`;
+                    }
+                } catch {
+                    errorMessage += `\n- Server error: ${error.response.data}`;
+                }
+            } else {
+                errorMessage += `\n- Server returned status ${error.response?.status || 'unknown'}`;
+            }
+
+            toast.error(errorMessage, {
+                position: "top-center",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "dark",
+                className: "max-w-full"
+            });
+            
+            // Check for specific error types
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                toast.error(error.response.data?.message || `Server error: ${error.response.status}`, {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+            } else if (error.request) {
+                // The request was made but no response was received
+                toast.error("No response from server. Please check your internet connection.", {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                toast.error(error.message || "Failed to add product. Please check the console for details.", {
+                    position: "top-center",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                });
+            }
+        }
     }
     return (
        <motion.div 

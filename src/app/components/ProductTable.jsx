@@ -24,7 +24,7 @@ function ProductTable() {
 
     
     useEffect(() => {
-       axios.get("http://127.0.0.1:8000/view_products/")
+       axios.get("https://adminbackend-czlc.onrender.com/view_products/")
        .then((res)=>{
         // The API returns { count: number, data: array }
         console.log('API Response:', res.data);
@@ -57,7 +57,7 @@ function ProductTable() {
       // Log the form data for debugging
       console.log('Sending form data:', Object.fromEntries(formData.entries()));
       
-      axios.post("http://127.0.0.1:8000/delete_products/", formData, {
+      axios.post("https://adminbackend-czlc.onrender.com/delete_products/", formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
         },
@@ -134,7 +134,7 @@ function ProductTable() {
                            <td className='md:hidden px-3 py-2'>
                             <div className='flex items-center justify-between'>
                                 <div className='flex items-center'>
-                                   <Image 
+                                   {/* <Image 
                                      src={product.image ? `http://127.0.0.1:8000${product.image}` : '/images/placeholder.png'}
                                      alt={product.name} 
                                      width={50} 
@@ -144,7 +144,7 @@ function ProductTable() {
                                        e.target.onerror = null;
                                        e.target.src = '/images/placeholder-product.png';
                                      }}
-                                   />
+                                   /> */}
                                    <div className='ml-3'>
                                      <p className='text-sm font-medium text-gray-100'>{product.name}</p>
                                      <p className='text-xs text-gray-400'>{product.category}</p>
@@ -162,7 +162,7 @@ function ProductTable() {
                            {/* Desktop View */}
                            <td className='hidden md:table-cell px-6 py-4 whitespace-nowrap'>
                              <div className='flex items-center'>
-                               <Image 
+                               {/* <Image 
                                  src={product.image ? `http://127.0.0.1:8000${product.image}` : '/images/placeholder.png'}
                                  alt={product.name} 
                                  width={40} 
@@ -172,7 +172,7 @@ function ProductTable() {
                                    e.target.onerror = null;
                                    e.target.src = '/images/placeholder-product.png';
                                  }}
-                               />
+                               /> */}
                                <div className='ml-4'>
                                  <div className='text-sm font-medium text-gray-100'>{product.name}</div>
                                  <div className='text-sm md:hidden md:table-cell text-gray-400'>{product.category}</div>

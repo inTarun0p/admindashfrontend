@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
+  experimental: {
+    appDir: true, // if using App Router
+  },
+  output: 'standalone',
   images: {
     unoptimized: true,
     remotePatterns: [
